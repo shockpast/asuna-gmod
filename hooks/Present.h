@@ -49,6 +49,8 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 	{
 		ImGui::CreateContext();
 
+		EngineClient->GetScreenSize(globals::screenWidth, globals::screenHeight);
+
 		globals::window = FindWindowA("Valve001", nullptr);
 		globals::oWndProc = (WNDPROC)SetWindowLongPtrA(globals::window, GWL_WNDPROC, (LONG_PTR)WndProc);
 
@@ -69,7 +71,6 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 		ImGui_ImplDX9_Init(pDevice);
 
 		ImGuiIO& io = ImGui::GetIO();
-		io.ConfigFlags = ImGuiConfigFlags_NoMouseCursorChange;
 		io.LogFilename = NULL;
 		io.IniFilename = NULL;
 
@@ -104,37 +105,31 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 
 	ImGui::NewFrame();
 
+	if (globals::menu::visible)
 	{
-		if (globals::menu::visible)
+		ImGui::Begin("asuna", nullptr, ImGuiWindowFlags_NoResize);
+
+		// Tabs
+		if (ImGui::Button("Misc", ImVec2(100.f, 0.f)))
 		{
-			ImGui::Begin("asuna", nullptr, ImGuiWindowFlags_NoResize);
-
-			// Tabs
-			if (ImGui::Button("Misc", ImVec2(100.f, 0.f)))
-			{
-				globals::menu::tabs::drawMisc = !globals::menu::tabs::drawMisc;
-			}
-			ImGui::SameLine(0.f, 2.f);
-			if (ImGui::Button("Lua", ImVec2(100.f, 0.f)))
-			{
-				globals::menu::tabs::drawLua = !globals::menu::tabs::drawLua;
-			}
-			ImGui::SameLine(0.f, 2.f);
-			if (ImGui::Button("Credits", ImVec2(100.f, 0.f)))
-			{
-				globals::menu::tabs::drawCredits = !globals::menu::tabs::drawCredits;
-			}
-			ImGui::SameLine(0.f, 2.f);
-
-			// Switches
-			if (true) gui::DrawLogger(); // just to make it consistent
-			if (globals::menu::tabs::drawMisc) gui::DrawMisc();
-			if (globals::menu::tabs::drawLua) gui::DrawLua();
-			if (globals::menu::tabs::drawCredits) gui::DrawCredits();
-
-			ImGui::End();
+			globals::menu::tabs::drawMisc = !globals::menu::tabs::drawMisc;
 		}
+		ImGui::SameLine(0.f, 2.f);
+		if (ImGui::Button("Lua", ImVec2(100.f, 0.f)))
+		{
+			globals::menu::tabs::drawLua = !globals::menu::tabs::drawLua;
+		}
+		ImGui::SameLine(0.f, 2.f);
+
+		// Switches
+		if (true) gui::DrawLogger(); // just to make it consistent
+		if (globals::menu::tabs::drawMisc) gui::DrawMisc();
+		if (globals::menu::tabs::drawLua) gui::DrawLua();
+
+		ImGui::End();
 	}
+
+	if (settings::misc::watermark) gui::DrawWatermark();
 
 	ImGui::EndFrame();
 	ImGui::Render();
@@ -154,6 +149,8 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 			context->BeginRender();
 			context->SetRenderTarget(rt);
 			context->EndRender();
+
+			logger::AddLog("[warning] screengrab -> [render] @ %s", GetTime());
 		}
 	}
 
