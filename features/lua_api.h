@@ -9,22 +9,18 @@
 
 #include <fstream>
 #include <filesystem>
+#include <random>
 
 namespace fs = std::filesystem;
 
-namespace lua_api {
-	// doesnt' seem to work?
-	LUA_FUNCTION(load_bytecode)
-	{
-		return 0;
-	}
-
+namespace lua_api 
+{
 	LUA_FUNCTION(log)
 	{
 		LUA->CheckString(1);
 
 		logger::AddLog(LUA->GetString(-1));
-	
+
 		return 1;
 	}
 
@@ -196,9 +192,7 @@ namespace lua_api {
 
 		netchannel->SendData(&write, true);
 
-		LUA->PushBool(true);
-
-		return 1;
+		return 0;
 	}
 
 	LUA_FUNCTION(custom_disconnect)
@@ -220,51 +214,16 @@ namespace lua_api {
 		return 0;
 	}
 
-	// doesn't work? requires research
-	LUA_FUNCTION(exploit_sourcenet)
+	LUA_FUNCTION(set_typing)
 	{
-		int data[23] = { 0, 83, 101, 110, 100, 83, 101, 114, 118, 101, 114, 77, 97, 112, 67, 121, 99, 108, 101, 0, 8, 8, 0 };
-		static uint8_t packet[256 + 2 + sizeof(data)];
+		LUA->CheckType(1, static_cast<int>(LuaObjectType::USERCMD));
+		LUA->CheckType(2, static_cast<int>(LuaObjectType::BOOL));
 
-		CNetChan* netchannel = EngineClient->GetNetChannelInfo();
-		bf_write write;
-		write.StartWriting(packet, sizeof(packet));
-		write.WriteUInt(static_cast<uint32_t>(NetMessage::clc_CmdKeyValues), NET_MESSAGE_BITS);
-		write.WriteLong(22);
+		CUserCmd* ucmd = LUA->GetUserType<CUserCmd>(1, static_cast<int>(LuaObjectType::USERCMD));
+		bool isTyping = LUA->GetBool(2);
 
-		for (int i = 0; i < sizeof(data) / sizeof(int); i++)
-		{
-			write.WriteChar(data[i]);
-		}
-
-		netchannel->SendData(&write, true);
-		netchannel->Transmit(false);
-
-		return 0;
-	}
-	
-	// doesn't work? requires research
-	LUA_FUNCTION(exploit_achievement)
-	{
-		LUA->CheckNumber(1);
-		LUA->CheckNumber(2);
-
-		int data[22] = { 0, 65, 99, 104, 105, 101, 118, 101, 109, 101, 110, 116, 69, 97, 114, 110, 101, 100, 0, 8, 8, 0 };
-		static uint8_t packet[256 + 2 + sizeof(data)];
-
-		CNetChan* netchannel = EngineClient->GetNetChannelInfo();
-		bf_write write;
-		write.StartWriting(packet, sizeof(packet));
-		write.WriteUInt(static_cast<uint32_t>(NetMessage::clc_CmdKeyValues), NET_MESSAGE_BITS);
-		write.WriteLong(21);
-		write.WriteSignedInt(LUA->GetNumber(2), 16);
-
-		for (int i = 0; i < sizeof(data) / sizeof(int); i++)
-		{
-			write.WriteChar(data[i]);
-		}
-
-		netchannel->SendData(&write, true);
+		ucmd->is_typing = isTyping;
+		ucmd->world_clicking = isTyping;
 
 		return 0;
 	}
@@ -382,7 +341,7 @@ namespace lua_api {
 
 		try
 		{
-			std::thread(RunScript, content).join();
+			std::thread(RunScript, content).detach();
 		}
 		catch (std::exception& e)
 		{
@@ -390,6 +349,30 @@ namespace lua_api {
 		}
 
 		return 0;
+	}
+
+	LUA_FUNCTION(common_random_string)
+	{
+		LUA->CheckNumber(1);
+
+		int length = LUA->GetNumber(1);
+		const std::string set = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
+
+		std::random_device rd;
+		std::mt19937 gen(rd());
+		std::uniform_int_distribution<> dis(0, set.length() - 1);
+
+		std::string result;
+		result.reserve(length);
+
+		for (size_t i = 0; i < length; ++i)
+		{
+			result += set[dis(gen)];
+		}
+
+		LUA->PushString(result.c_str());
+
+		return 1;
 	}
 
 	void init()
@@ -408,6 +391,15 @@ namespace lua_api {
 		// asuna table
 		Lua->CreateTable();
 		{
+			// commons function that can make coding easier
+			Lua->CreateTable();
+			{
+				// common_random_string should be cryptographically secure
+				Lua->PushCFunction(common_random_string);
+				Lua->SetField(-2, "random_string");
+			}
+			Lua->SetField(-2, "common");
+
 			// asuna - logger
 			// [debug], [warning], [error]
 			Lua->PushCFunction(log);
@@ -497,15 +489,6 @@ namespace lua_api {
 				// to harm any servers anyhow using these functions
 				Lua->CreateTable();
 				{
-					// lags client movement, only visual (uneffective)
-					// previously it could crash some servers
-					Lua->PushCFunction(exploit_sourcenet);
-					Lua->SetField(-2, "sourcenet");
-
-					// notifies about fake achievement earning
-					Lua->PushCFunction(exploit_achievement);
-					Lua->SetField(-2, "achievement");
-
 					// requests file from server
 					// technically you could request any,
 					// but for some reason it's only current map file
@@ -549,6 +532,10 @@ namespace lua_api {
 				// disconnects localplayer with custom reason
 				Lua->PushCFunction(custom_disconnect);
 				Lua->SetField(-2, "custom_disconnect");
+
+				// fakes that player is currently typing
+				Lua->PushCFunction(set_typing);
+				Lua->SetField(-2, "set_typing");
 
 				// retrieves localplayer from engine interface
 				Lua->PushCFunction(get_local_player);
