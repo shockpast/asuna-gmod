@@ -6,6 +6,8 @@
 
 #include "../../globals.h"
 
+#include "../../helpers/common.h"
+
 #include <cstdarg>
 
 std::once_flag SetTextFlag = {};
@@ -90,17 +92,7 @@ namespace gui {
 		if (ImGui::Begin("asuna - misc", nullptr, ImGuiWindowFlags_NoResize))
 		{
 			ImGui::Checkbox("ScriptHook", &settings::lua::scripthook::dumpServer);
-		}
-
-		ImGui::End();
-	}
-
-	void DrawCredits()
-	{
-		ImGui::SetNextWindowContentSize(ImVec2(300.f, 0.0f));
-		if (ImGui::Begin("asuna - credits", nullptr, ImGuiWindowFlags_NoResize))
-		{
-			ImGui::Text("0w0");
+			ImGui::Checkbox("Watermark", &settings::misc::watermark);
 		}
 
 		ImGui::End();
@@ -164,5 +156,39 @@ namespace gui {
 		}
 
 		ImGui::End();
+	}
+
+	// shockpast: this shit is ugly
+	void DrawWatermark()
+	{
+		std::string time = GetTime();
+		std::string username = "unknown";
+
+		if (EngineClient->IsInGame())
+		{
+			player_info_s info;
+			EngineClient->GetPlayerInfo(EngineClient->GetLocalPlayer(), &info);
+
+			username = info.name;
+		}
+		
+		std::string text = std::format("asuna | {} | {}", username, time);
+		ImVec2 size = ImGui::CalcTextSize(text.c_str());
+
+		ImDrawList* list = ImGui::GetBackgroundDrawList();
+
+		int x = globals::screenWidth;
+		int y = globals::screenHeight;
+
+		// side * amount of sides
+		int padding = 4 * 2;
+
+		int min = x - size.x - padding - 6;
+		int max = min + size.x + padding;
+
+		list->AddRectFilled(ImVec2(min, 4), ImVec2(max, 6), ImColor(128, 132, 255));
+		list->AddRectFilled(ImVec2(min, 6), ImVec2(max, 25), ImColor(18, 18, 18, 100));
+
+		list->AddText(ImVec2(x - size.x - 10, 8), ImColor(255, 255, 255), text.c_str());
 	}
 }

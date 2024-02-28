@@ -6,6 +6,7 @@
 #include <map>
 #include <mutex>
 #include <stack>
+#include <format>
 
 #include "ext/imgui_ext/texteditor.h"
 
@@ -22,13 +23,14 @@
 #include "headers/engine/CModelInfo.h"
 #include "headers/engine/CModelRender.h";
 #include "headers/engine/CMaterialSystem.h"
+#include "headers/engine/CGameEventManager.h"
 #include "headers/vgui/VPanelWrapper.h"
 #include "headers/lua_shared/CLuaShared.h"
 #include "headers/vguimatsurface/CMatSystemSurface.h"
 
 #include <d3d9.h>
 
-#define _VERSION "22.02.2024"
+#define _VERSION "28.02.2024"
 
 #define ViewRenderOffset 0xC4
 #define GlobalVarsOffset 0x94
@@ -37,6 +39,8 @@
 
 #define PresentModule "gameoverlayrenderer64"
 #define PresentPattern "\xFF\x15????\x8B\xF8\xEB\x1E"
+
+class IEvents;
 
 typedef HRESULT(__stdcall* _Present)(IDirect3DDevice9*, CONST RECT*, CONST RECT*, HWND, CONST RGNDATA*);
 typedef void(__thiscall* _PaintTraverse)(void*, VPanel*, bool, bool);
@@ -56,12 +60,15 @@ CMaterialSystem* MaterialSystem;
 CMatSystemSurface* MatSystemSurface;
 CVRenderView* RenderView;
 VPanelWrapper* PanelWrapper;
+IGameEventManager2* EventManager;
 
 void* EngineVGui;
 
 char* present;
 _Present oPresent;
 _PaintTraverse oPaintTraverse;
+
+IEvents* Events;
 
 namespace globals {
 	HWND window;
@@ -70,14 +77,10 @@ namespace globals {
 	int screenWidth;
 	int screenHeight;
 
-	std::atomic<vmatrix_t> viewMatrix;
-
 	namespace menu {
 		namespace tabs {
 			bool drawLua = false;
 			bool drawMisc = false;
-			bool drawCredits = false;
-			bool drawVisuals = false;
 		}
 
 		bool visible = false;
@@ -100,5 +103,9 @@ namespace settings {
 			bool dumpServer;
 			int dumpMode;
 		}
+	}
+
+	namespace misc {
+		bool watermark;
 	}
 }
