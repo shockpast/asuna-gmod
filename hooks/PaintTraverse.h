@@ -35,14 +35,12 @@ void __fastcall hkPaintTraverse(VPanelWrapper* _this, VPanel* panel, bool force_
 
 			lua_api::init();
 
-			int code = reinterpret_cast<int>(Lua->PCall(0, 0, 0));
-
-			if (code)
+			if (Lua->PCall(0, 0, 0))
 			{
 				std::string error = Lua->GetString(-1);
 				Lua->Pop();
 
-				logger::AddLog("[error] execution error: %s (%d)\n", error.c_str(), code);
+				logger::AddLog("[error] execution error: %s\n", error.c_str());
 			}
 
 			globals::lua::queue.pop();
