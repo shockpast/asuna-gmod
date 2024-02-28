@@ -1,6 +1,6 @@
 //========= Copyright Valve Corporation, All rights reserved. ============//
 //
-// Purpose: 
+// Purpose:
 //
 // $NoKeywords: $
 //
@@ -17,6 +17,7 @@
 #include "../mathlib/math_pfns.h"
 #include "../tier0/shareddefs.h"
 #include "../tier0/basetypes.h"
+#include "vmatrix.h"
 
 
 //-----------------------------------------------------------------------------
@@ -33,6 +34,56 @@ enum MaterialVarType_t
 	MATERIAL_VAR_TYPE_UNDEFINED,
 	MATERIAL_VAR_TYPE_MATRIX,
 	MATERIAL_VAR_TYPE_MATERIAL,
+};
+
+enum ImageFormat_t
+{
+	IMAGE_FORMAT_UNKNOWN = -1,
+	IMAGE_FORMAT_RGBA8888 = 0,
+	IMAGE_FORMAT_ABGR8888,
+	IMAGE_FORMAT_RGB888,
+	IMAGE_FORMAT_BGR888,
+	IMAGE_FORMAT_RGB565,
+	IMAGE_FORMAT_I8,
+	IMAGE_FORMAT_IA88,
+	IMAGE_FORMAT_P8,
+	IMAGE_FORMAT_A8,
+	IMAGE_FORMAT_RGB888_BLUESCREEN,
+	IMAGE_FORMAT_BGR888_BLUESCREEN,
+	IMAGE_FORMAT_ARGB8888,
+	IMAGE_FORMAT_BGRA8888,
+	IMAGE_FORMAT_DXT1,
+	IMAGE_FORMAT_DXT3,
+	IMAGE_FORMAT_DXT5,
+	IMAGE_FORMAT_BGRX8888,
+	IMAGE_FORMAT_BGR565,
+	IMAGE_FORMAT_BGRX5551,
+	IMAGE_FORMAT_BGRA4444,
+	IMAGE_FORMAT_DXT1_ONEBITALPHA,
+	IMAGE_FORMAT_BGRA5551,
+	IMAGE_FORMAT_UV88,
+	IMAGE_FORMAT_UVWQ8888,
+	IMAGE_FORMAT_RGBA16161616_f,
+	IMAGE_FORMAT_RGBA16161616,
+	IMAGE_FORMAT_UVLX8888,
+	IMAGE_FORMAT_R32_F,				// Single-channel 32-bit floating point
+	IMAGE_FORMAT_RGB323232_F,
+	IMAGE_FORMAT_RGBA32323232_F,
+
+	// Depth-stencil texture formats for shadow depth mapping
+	IMAGE_FORMAT_NV_DST16,		//
+	IMAGE_FORMAT_NV_DST24,		//
+	IMAGE_FORMAT_NV_INTZ,			// Vendor-specific depth-stencil texture
+	IMAGE_FORMAT_NV_RAWZ,			// formats for shadow depth mapping
+	IMAGE_FORMAT_ATI_DST16,		//
+	IMAGE_FORMAT_ATI_DST24,		//
+	IMAGE_FORMAT_NV_NULL,			// Dummy format which takes no video memory
+
+	// Compressed normal map formats
+	IMAGE_FORMAT_ATI2_N,			// One-surface ATI2N / DXN format
+	IMAGE_FORMAT_ATI1_N,			// Two-surface ATI1N format
+
+	NUM_IMAGE_FORMATS
 };
 
 typedef unsigned short MaterialVarSym_t;
@@ -73,7 +124,7 @@ public:
 
 	// Use FourCC values to pass app-defined data structures between
 	// the proxy and the shader. The shader should ignore the data if
-	// its FourCC type not correct.	
+	// its FourCC type not correct.
 	virtual void			SetFourCCValue(FourCC type, void* pData) = 0;
 	virtual void			GetFourCCValue(FourCC* type, void** ppData) = 0;
 
@@ -359,7 +410,7 @@ inline int GetVertexElementSize(VertexElement_t element, VertexCompressionType_t
 			return (2 * sizeof(short));
 		case VERTEX_ELEMENT_USERDATA4:
 			return (2 * sizeof(short));
-#else //( COMPRESSED_NORMALS_TYPE == COMPRESSED_NORMALS_COMBINEDTANGENTS_UBYTE4 ) 
+#else //( COMPRESSED_NORMALS_TYPE == COMPRESSED_NORMALS_COMBINEDTANGENTS_UBYTE4 )
 			// Normals and tangents (userdata4) are combined into a single UBYTE4 vertex element
 		case VERTEX_ELEMENT_NORMAL:
 			return (4 * sizeof(unsigned char));
@@ -534,7 +585,7 @@ enum PreviewImageRetVal_t
 class IMaterial
 {
 public:
-	// Get the name of the material.  This is a full path to 
+	// Get the name of the material.  This is a full path to
 	// the vmt file starting from "hl2/materials" (or equivalent) without
 	// a file extension.
 	virtual const char* GetName() const = 0;
@@ -553,7 +604,7 @@ public:
 	virtual PreviewImageRetVal_t GetPreviewImage(unsigned char* data,
 												 int width, int height,
 												 void* imageFormat) const = 0;
-	// 
+	//
 	virtual int				GetMappingWidth() = 0;
 	virtual int				GetMappingHeight() = 0;
 
@@ -572,7 +623,7 @@ public:
 	virtual IMaterialVar* FindVar(const char* varName, bool* found, bool complain = true) = 0;
 
 	// The user never allocates or deallocates materials.  Reference counting is
-	// used instead.  Garbage collection is done upon a call to 
+	// used instead.  Garbage collection is done upon a call to
 	// IMaterialSystem::UncacheUnusedMaterials.
 	virtual void			IncrementReferenceCount(void) = 0;
 	virtual void			DecrementReferenceCount(void) = 0;
