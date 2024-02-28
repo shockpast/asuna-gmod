@@ -5,13 +5,15 @@
 #include "ext/interface.h"
 
 #include "hooks/PaintTraverse.h"
-#include "hooks/Present.h"
 #include "hooks/RunStringEx.h"
 #include "hooks/RenderView.h"
+#include "hooks/FireEvent.h"
+#include "hooks/Present.h"
 #include "hooks/Paint.h"
 
 #include "features/lua_api.h"
 #include "features/config.h"
+#include "features/events.h"
 
 #include "globals.h"
 
@@ -31,6 +33,7 @@ void main()
 	MatSystemSurface = (CMatSystemSurface*)GetInterface("vguimatsurface.dll", "VGUI_Surface030");
 	EngineVGui = (void*)GetInterface("engine.dll", "VEngineVGui001");
 	ModelInfo = (CModelInfo*)GetInterface("engine.dll", "VModelInfoClient006");
+	EventManager = (IGameEventManager2*)GetInterface("engine.dll", "GAMEEVENTSMANAGER002");
 
 	ViewRender = GetVMT<CViewRender>((uintptr_t)CHLclient, 2, ViewRenderOffset);
 	GlobalVars = GetVMT<CGlobalVarsBase>((uintptr_t)CHLclient, 0, GlobalVarsOffset);
@@ -39,12 +42,14 @@ void main()
 	{
 		oRunStringEx = VMTHook<_RunStringEx>((PVOID**)Lua, (PVOID)hkRunStringEx, 111);
 	}
+
 	oCreateLuaInterfaceFn = VMTHook<_CreateLuaInterfaceFn>((PVOID**)LuaShared, (PVOID)hkCreateLuaInterfaceFn, 4);
 	oCloseLuaInterfaceFn = VMTHook<_CloseLuaInterfaceFn>((PVOID**)LuaShared, (PVOID)hkCloseInterfaceLuaFn, 5);
 
 	oPaint = VMTHook<_Paint>((PVOID**)EngineVGui, (PVOID)hkPaint, 13);
 	oPaintTraverse = VMTHook<_PaintTraverse>((PVOID**)PanelWrapper, (PVOID)hkPaintTraverse, 41);
 	oRenderView = VMTHook<_RenderView>((PVOID**)ViewRender, (PVOID)hkRenderView, 6);
+	oFireEvent = VMTHook<_FireEvent>((PVOID**)EventManager, (PVOID)hkFireEvent, 8);
 
 	present = GetRealFromRelative((char*)FindPattern(PresentModule, PresentPattern, "Present"), 0x2, 6, false);
 
@@ -54,6 +59,8 @@ void main()
 	std::this_thread::sleep_for(std::chrono::milliseconds(500));
 
 	MatSystemSurface->PlaySound("HL1/fvox/activated.wav");
+
+	Events = new IEvents();
 
 	config::init();
 }
