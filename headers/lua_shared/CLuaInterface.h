@@ -115,7 +115,7 @@ public:
 		return *reinterpret_cast<lua_State**>(this + 1);
 	}
 
-	/*0*/	virtual void* Top(void) = 0;
+	/*0*/	virtual int Top(void) = 0;
 	/*1*/	virtual void* Push(int iStackPos) = 0;
 	/*2*/	virtual void* Pop(int iAmt = 1) = 0;
 	/*3*/	virtual void* GetTable(int iStackPos) = 0;
@@ -126,7 +126,7 @@ public:
 	/*8*/	virtual void* SetMetaTable(int) = 0;
 	/*9*/	virtual void* GetMetaTable(int) = 0;
 	/*10*/	virtual void* Call(int iArgs, int iRets) = 0;
-	/*11*/	virtual void* PCall(int, int, int) = 0;
+	/*11*/	virtual void* PCall(int iArgs, int iResults, int iErrorFunc) = 0;
 	/*12*/	virtual void* Equal(int, int) = 0;
 	/*13*/	virtual void* RawEqual(int, int) = 0;
 	/*14*/	virtual void* Insert(int) = 0;
