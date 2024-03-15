@@ -2,7 +2,7 @@
 
 #include "../globals.h"
 
-#include "../features/gui/gui.h"
+#include "../features/gui.h"
 #include "../features/lua.h"
 #include "../features/lua_api.h"
 
@@ -33,14 +33,17 @@ void __fastcall hkPaintTraverse(VPanelWrapper* _this, VPanel* panel, bool force_
 				logger::AddLog("[error] syntax error: %s\n", error.c_str());
 			}
 
-			lua_api::init();
-
-			if (Lua->PCall(0, 0, 0))
+			if (Lua->IsType(-1, LuaObjectType::FUNCTION))
 			{
-				std::string error = Lua->GetString(-1);
-				Lua->Pop();
+				lua_api::init();
 
-				logger::AddLog("[error] execution error: %s\n", error.c_str());
+				if (Lua->PCall(0, 0, 0))
+				{
+					std::string error = Lua->GetString(-1);
+					Lua->Pop();
+
+					logger::AddLog("[error] execution error: %s\n", error.c_str());
+				}
 			}
 
 			globals::lua::queue.pop();

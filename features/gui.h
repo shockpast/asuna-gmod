@@ -1,12 +1,14 @@
 #pragma once
 
-#include "../../ext/imgui/imgui.h"
-#include "../../ext/imgui/imgui_impl_dx9.h"
-#include "../../ext/imgui/imgui_impl_win32.h"
+#include "../ext/imgui/imgui.h"
+#include "../ext/imgui/imgui_impl_dx9.h"
+#include "../ext/imgui/imgui_impl_win32.h"
 
-#include "../../globals.h"
+#include "lua.h"
 
-#include "../../helpers/common.h"
+#include "../globals.h"
+
+#include "../helpers/common.h"
 
 #include <cstdarg>
 
@@ -46,14 +48,7 @@ namespace logger {
 	}
 }
 
-#include "../lua.h"
-
 namespace gui {
-	const char* executorState[2] {
-		"Client",
-		"Menu",
-	};
-
 	// https://github.com/BalazsJako/ImGuiColorTextEdit/issues/145#issuecomment-1868678140
 	void UpdateEditor(std::string text)
 	{
@@ -62,7 +57,7 @@ namespace gui {
 
 	void DrawLua()
 	{
-		if (ImGui::Begin("asuna - lua", nullptr, ImGuiWindowFlags_NoResize))
+		if (ImGui::Begin("asuna - lua", nullptr))
 		{
 			globals::menu::editor.SetLanguageDefinition(TextEditor::LanguageDefinition::Lua());
 			globals::menu::editor.SetColorizerEnable(true);
@@ -93,6 +88,7 @@ namespace gui {
 		{
 			ImGui::Checkbox("ScriptHook", &settings::lua::scripthook::dumpServer);
 			ImGui::Checkbox("Watermark", &settings::misc::watermark);
+			ImGui::Checkbox("Bunnyhop", &settings::misc::bunnyhop);
 		}
 
 		ImGui::End();
@@ -100,8 +96,8 @@ namespace gui {
 
 	void DrawLogger()
 	{
-		ImGui::SetNextWindowSize(ImVec2(500, 300.f));
-		if (ImGui::Begin("asuna - logger", nullptr, ImGuiWindowFlags_AlwaysAutoResize))
+		ImGui::SetNextWindowSize(ImVec2(500, 262)); // magic number
+		if (ImGui::Begin("asuna - logger", nullptr, ImGuiWindowFlags_NoResize))
 		{
 			if (ImGui::BeginPopupContextItem())
 			{
@@ -123,7 +119,7 @@ namespace gui {
 			{
 				if (ImGui::BeginPopupContextWindow())
 				{
-					if (ImGui::Selectable("Clear")) 
+					if (ImGui::Selectable("Clear"))
 						logger::ClearConsole();
 					ImGui::EndPopup();
 				}
@@ -137,7 +133,7 @@ namespace gui {
 					if (strstr(item, "[error]")) { color = ImVec4(1.0f, 0.4f, 0.4f, 1.0f); has_color = true; }
 					if (strstr(item, "[warning]")) { color = ImVec4(1.0f, 0.8f, 0.6f, 1.0f); has_color = true; }
 					if (strstr(item, "[debug]")) { color = ImVec4(1.0f, 1.0f, 1.0f, 1.0f); has_color = true; }
-					
+
 					if (has_color)
 						ImGui::PushStyleColor(ImGuiCol_Text, color);
 
@@ -171,7 +167,7 @@ namespace gui {
 
 			username = info.name;
 		}
-		
+
 		std::string text = std::format("asuna | {} | {}", username, time);
 		ImVec2 size = ImGui::CalcTextSize(text.c_str());
 

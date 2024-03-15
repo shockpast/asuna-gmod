@@ -40,10 +40,14 @@
     <CharacterSet>Unicode</CharacterSet>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
+    <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
     <PlatformToolset>v143</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
+    <CharacterSet>MultiByte</CharacterSet>
+    <PreferredToolArchitecture>x64</PreferredToolArchitecture>
+    <WholeProgramOptimization>false</WholeProgramOptimization>
+    <EnableASAN>false</EnableASAN>
+    <EnableFuzzer>false</EnableFuzzer>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
@@ -77,6 +81,11 @@
     <GenerateManifest>false</GenerateManifest>
     <IncludePath>$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
     <LibraryPath>$(DXSDK_DIR)Lib\x64;$(LibraryPath)</LibraryPath>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
+    <OutDir>$(SolutionDir)\build\debug\</OutDir>
+    <IntDir>$(SolutionDir)\build\debug\intermediates\</IntDir>
+    <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -112,11 +121,24 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
+      <LanguageStandard>stdcpp20</LanguageStandard>
+      <LanguageStandard_C>stdc17</LanguageStandard_C>
+      <AdditionalIncludeDirectories>d3d9.lib;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <SupportJustMyCode>false</SupportJustMyCode>
+      <MultiProcessorCompilation>true</MultiProcessorCompilation>
+      <Optimization>MaxSpeed</Optimization>
+      <FavorSizeOrSpeed>Size</FavorSizeOrSpeed>
+      <EnableFiberSafeOptimizations>false</EnableFiberSafeOptimizations>
+      <BasicRuntimeChecks>Default</BasicRuntimeChecks>
     </ClCompile>
     <Link>
-      <SubSystem>Console</SubSystem>
+      <SubSystem>Windows</SubSystem>
       <GenerateDebugInformation>true</GenerateDebugInformation>
+      <AdditionalDependencies>d3d9.lib;%(AdditionalDependencies)</AdditionalDependencies>
     </Link>
+    <BuildLog>
+      <Path />
+    </BuildLog>
   </ItemDefinitionGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <ClCompile>
@@ -143,6 +165,12 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="ext\kiero\kiero.cpp" />
+    <ClCompile Include="ext\kiero\minhook\src\buffer.c" />
+    <ClCompile Include="ext\kiero\minhook\src\hde\hde32.c" />
+    <ClCompile Include="ext\kiero\minhook\src\hde\hde64.c" />
+    <ClCompile Include="ext\kiero\minhook\src\hook.c" />
+    <ClCompile Include="ext\kiero\minhook\src\trampoline.c" />
     <ClCompile Include="helpers\common.cpp" />
     <ClCompile Include="dllmain.cpp" />
     <ClCompile Include="ext\imgui\imgui.cpp" />
@@ -167,6 +195,15 @@
     <ClInclude Include="ext\imgui\imstb_truetype.h" />
     <ClInclude Include="ext\imgui_ext\texteditor.h" />
     <ClInclude Include="ext\interface.h" />
+    <ClInclude Include="ext\kiero\kiero.h" />
+    <ClInclude Include="ext\kiero\minhook\include\MinHook.h" />
+    <ClInclude Include="ext\kiero\minhook\src\buffer.h" />
+    <ClInclude Include="ext\kiero\minhook\src\hde\hde32.h" />
+    <ClInclude Include="ext\kiero\minhook\src\hde\hde64.h" />
+    <ClInclude Include="ext\kiero\minhook\src\hde\pstdint.h" />
+    <ClInclude Include="ext\kiero\minhook\src\hde\table32.h" />
+    <ClInclude Include="ext\kiero\minhook\src\hde\table64.h" />
+    <ClInclude Include="ext\kiero\minhook\src\trampoline.h" />
     <ClInclude Include="ext\memory.h" />
     <ClInclude Include="ext\toml\color.hpp" />
     <ClInclude Include="ext\toml\combinator.hpp" />
@@ -194,6 +231,7 @@
     <ClInclude Include="ext\toml\version.hpp" />
     <ClInclude Include="features\config.h" />
     <ClInclude Include="features\events.h" />
+    <ClInclude Include="features\gui.h" />
     <ClInclude Include="features\gui\gui.h" />
     <ClInclude Include="features\lua.h" />
     <ClInclude Include="features\lua_api.h" />
@@ -252,16 +290,19 @@
     <ClInclude Include="headers\tier1\checksum_md5.h" />
     <ClInclude Include="headers\tier1\KeyValues.h" />
     <ClInclude Include="headers\vguimatsurface\CMatSystemSurface.h" />
+    <ClInclude Include="headers\vgui\IEngineVGui.h" />
     <ClInclude Include="headers\vgui\ISurfaceV30.h" />
     <ClInclude Include="headers\vgui\VPanelWrapper.h" />
     <ClInclude Include="headers\vphysics\CPhysicsSurfaceProps.h" />
     <ClInclude Include="helpers\common.h" />
+    <ClInclude Include="hooks\CreateMove.h" />
     <ClInclude Include="hooks\FireEvent.h" />
     <ClInclude Include="hooks\Paint.h" />
     <ClInclude Include="hooks\PaintTraverse.h" />
     <ClInclude Include="hooks\Present.h" />
     <ClInclude Include="hooks\RenderView.h" />
     <ClInclude Include="hooks\RunStringEx.h" />
+    <ClInclude Include="hooks\SendNetMsg.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include=".gitattributes" />

@@ -527,7 +527,7 @@ public:
 
 	// Note to myself, before releasing x86, update x86 offsets...
 		
-	int getTeamNum() {
+	int GetTeamNum() {
 #ifdef _WIN64
 		return *(int*)((uintptr_t)this + 0xD4); // m_iTeamNum
 #else
@@ -535,21 +535,21 @@ public:
 #endif
 	}
 
-	int getMoveType() {
+	int GetMoveType() {
 #ifdef _WIN64
 		return *(int*)((uintptr_t)this + 0x1F4); // https://i.imgur.com/NV5vl7c.png m_movetype
 #else
 		return *(int*)((uintptr_t)this + 0x178); // https://i.imgur.com/oRWjTg9.png
 #endif
 	}
-	int getFlags() {
+	int GetFlags() {
 #ifdef _WIN64
 		return *(int*)((uintptr_t)this + 0x440);
 #else
 		return *(int*)((uintptr_t)this + 0x350); // m_fFlags
 #endif
 	}
-	unsigned int getTickBase() {
+	unsigned int GetTickBase() {
 #ifdef _WIN64
 		return *(unsigned int*)((uintptr_t)this + 0x2D48);
 #else
@@ -557,7 +557,7 @@ public:
 #endif
 	}
 
-	Vector getVelocity() {
+	Vector GetVelocity() {
 #ifdef _WIN64
 		return *(Vector*)((uintptr_t)this + 0x148);
 #else

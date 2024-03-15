@@ -3,4 +3,4 @@
 #include <string>
 
 std::string GetTime();
-std::string RandomString();
+std::string RandomString(int length);

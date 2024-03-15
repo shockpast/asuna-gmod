@@ -1,5 +1,8 @@
-#include "memory.h"
 #include "../helpers/common.h"
+
+#include "memory.h"
+
+#include <format>
 
 void BytePatch(PVOID source, BYTE newValue)
 {
@@ -86,21 +89,18 @@ const char* FindPattern(const char* moduleName, std::string_view pattern, std::s
             start += badCharTable[static_cast<std::uint8_t>(start[lastIdx])];
         }
     }
+
+    MessageBoxA(NULL, std::format("Module: {}\nPattern: {}\nmiku. miku. miku. miku. miku. miku.", moduleName, pattern).c_str(), "ERROR", MB_OK | MB_ICONERROR);
  
     return 0;
 }
 
 char* GetRealFromRelative(char* address, int offset, int instructionSize, bool isRelative)
 {
-    #ifdef _WIN64
-        isRelative = true;
-    #endif
-
     char* instruction = address + offset;
+
     if (!isRelative)
-    {
         return *(char**)(instruction);
-    }
 
     int relativeAddress = *(int*)(instruction);
     char* realAddress = address + instructionSize + relativeAddress;

@@ -29,7 +29,7 @@ T VMTHook(PVOID** src, PVOID dst, int index, bool noRestore = false)
     VirtualProtect(&VMT[index], sizeof(PVOID), PAGE_EXECUTE_READWRITE, &originalProtection);
     VMT[index] = dst;
     VirtualProtect(&VMT[index], sizeof(PVOID), originalProtection, &originalProtection);
-    
+
     if (!noRestore)
     {
         HookData currData = { src, ret, index };
@@ -44,10 +44,10 @@ void RestoreVMTHooks();
 
 const char* FindPattern(const char* moduleName, std::string_view pattern, std::string patternName) noexcept;
 
-char* GetRealFromRelative(char* address, int offset, int instructionSize = 6, bool isRelative = true);
+char* GetRealFromRelative(char* address, int offset, int instructionSize = 6, bool isRelative = false);
 
 template<typename T>
-T* GetVMT(uintptr_t address, int index, uintptr_t offset)
+static T* GetVMT(uintptr_t address, int index, uintptr_t offset)
 {
     uintptr_t step = 3;
     uintptr_t instructionSize = 7;
@@ -69,5 +69,3 @@ T* GetVMT(uintptr_t address, uintptr_t offset)
     uintptr_t realAddress = instruction + instructionSize + relativeAddress;
     return *(T**)(realAddress);
 }
-
-std::string RandomString(int length);

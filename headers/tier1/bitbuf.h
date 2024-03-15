@@ -206,6 +206,10 @@ public:
 		} while (*(pStr - 1) != 0);
 	}
 
+	inline bool	IsOverflowed() const {
+		return m_bOverflow;
+	}
+
 	// The current buffer.
 	uint32_t* __restrict m_pData;
 	int				m_nDataBytes;
@@ -346,6 +350,7 @@ public:
 
 	// Where we are in the buffer.
 	int				m_iCurBit;
+
 
 private:
 	// Errors?

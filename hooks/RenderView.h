@@ -2,7 +2,7 @@
 
 #include "../globals.h"
 
-#include "../features/gui/gui.h"
+#include "../features/gui.h"
 
 #include "../helpers/common.h"
 
@@ -13,9 +13,7 @@ _RenderView oRenderView;
 bool __fastcall hkRenderView(CViewRender* ViewRender, CViewSetup& view, int nClearFlags, int whatToDraw)
 {
 	if (EngineClient->IsTakingScreenshot())
-	{
-		logger::AddLog("[warning] screengrabbed -> [screenshot] @ %s", GetTime());
-	}
+		logger::AddLog("[warning] screengrabbed -> [screenshot] @ %s", GetTime().c_str());
 
 	return oRenderView(ViewRender, view, nClearFlags, whatToDraw);
 }

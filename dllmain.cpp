@@ -1,11 +1,15 @@
+#define VC_EXTRALEAN
 #define WIN32_LEAN_AND_MEAN
 #include "Windows.h"
 
 #include "ext/memory.h"
 #include "ext/interface.h"
+#include "ext/kiero/kiero.h"
 
 #include "hooks/PaintTraverse.h"
 #include "hooks/RunStringEx.h"
+#include "hooks/SendNetMsg.h"
+#include "hooks/CreateMove.h"
 #include "hooks/RenderView.h"
 #include "hooks/FireEvent.h"
 #include "hooks/Present.h"
@@ -18,30 +22,34 @@
 #include "globals.h"
 
 #include <fstream>
+#include <d3d9.h>
 
-void main()
+int main()
 {
-	EngineClient = (CEngineClient*)GetInterface("engine.dll", "VEngineClient015");
-	LuaShared = (CLuaShared*)GetInterface("lua_shared.dll", "LUASHARED003");
-	ClientEntityList = (CClientEntityList*)GetInterface("client.dll", "VClientEntityList003");
-	CHLclient = (CHLClient*)GetInterface("client.dll", "VClient017");
-	MaterialSystem = (CMaterialSystem*)GetInterface("materialsystem.dll", "VMaterialSystem080");
-	InputSystem = (CInputSystem*)GetInterface("inputsystem.dll", "InputSystemVersion001");
-	CVar = (CCvar*)GetInterface("vstdlib.dll", "VEngineCvar007");
-	RenderView = (CVRenderView*)GetInterface("engine.dll", "VEngineRenderView014");
-	PanelWrapper = (VPanelWrapper*)GetInterface("vgui2.dll", "VGUI_Panel009");
-	MatSystemSurface = (CMatSystemSurface*)GetInterface("vguimatsurface.dll", "VGUI_Surface030");
-	EngineVGui = (void*)GetInterface("engine.dll", "VEngineVGui001");
-	ModelInfo = (CModelInfo*)GetInterface("engine.dll", "VModelInfoClient006");
-	EventManager = (IGameEventManager2*)GetInterface("engine.dll", "GAMEEVENTSMANAGER002");
+#ifdef _DEBUG
+	AllocConsole();
+	SetConsoleTitleA(std::format("[debug] t.me/neshockpast - {}", _VERSION).c_str());
+	freopen_s((FILE**)stdout, "CONOUT$", "w", stdout);
+#endif
+
+	EngineClient = GetInterface<CEngineClient>("engine.dll", "VEngineClient015");
+	LuaShared = GetInterface<CLuaShared>("lua_shared.dll", "LUASHARED003");
+	ClientEntityList = GetInterface<CClientEntityList>("client.dll", "VClientEntityList003");
+	CHLclient = GetInterface<CHLClient>("client.dll", "VClient017");
+	MaterialSystem = GetInterface<CMaterialSystem>("materialsystem.dll", "VMaterialSystem080");
+	InputSystem = GetInterface<CInputSystem>("inputsystem.dll", "InputSystemVersion001");
+	CVar = GetInterface<CCvar>("vstdlib.dll", "VEngineCvar007");
+	ModelRender = GetInterface<CModelRender>("engine.dll", "VEngineModel016");
+	RenderView = GetInterface<CVRenderView>("engine.dll", "VEngineRenderView014");
+	PanelWrapper = GetInterface<VPanelWrapper>("vgui2.dll", "VGUI_Panel009");
+	MatSystemSurface = GetInterface<CMatSystemSurface>("vguimatsurface.dll", "VGUI_Surface030");
+	EngineVGui = GetInterface<IEngineVGui>("engine.dll", "VEngineVGui001");
+	ModelInfo = GetInterface<CModelInfo>("engine.dll", "VModelInfoClient006");
+	EventManager = GetInterface<IGameEventManager2>("engine.dll", "GAMEEVENTSMANAGER002");
 
 	ViewRender = GetVMT<CViewRender>((uintptr_t)CHLclient, 2, ViewRenderOffset);
 	GlobalVars = GetVMT<CGlobalVarsBase>((uintptr_t)CHLclient, 0, GlobalVarsOffset);
-
-	if (Lua = LuaShared->GetLuaInterface((unsigned char)LuaInterfaceType::LUA_CLIENT))
-	{
-		oRunStringEx = VMTHook<_RunStringEx>((PVOID**)Lua, (PVOID)hkRunStringEx, 111);
-	}
+	ClientMode = GetVMT<ClientModeShared>((uintptr_t)CHLclient, 10, ClientModeOffset);
 
 	oCreateLuaInterfaceFn = VMTHook<_CreateLuaInterfaceFn>((PVOID**)LuaShared, (PVOID)hkCreateLuaInterfaceFn, 4);
 	oCloseLuaInterfaceFn = VMTHook<_CloseLuaInterfaceFn>((PVOID**)LuaShared, (PVOID)hkCloseInterfaceLuaFn, 5);
@@ -50,27 +58,19 @@ void main()
 	oPaintTraverse = VMTHook<_PaintTraverse>((PVOID**)PanelWrapper, (PVOID)hkPaintTraverse, 41);
 	oRenderView = VMTHook<_RenderView>((PVOID**)ViewRender, (PVOID)hkRenderView, 6);
 	oFireEvent = VMTHook<_FireEvent>((PVOID**)EventManager, (PVOID)hkFireEvent, 8);
+	oCreateMove = VMTHook<_CreateMove>((PVOID**)ClientMode, (PVOID)hkCreateMove, 21);
 
-	present = GetRealFromRelative((char*)FindPattern(PresentModule, PresentPattern, "Present"), 0x2, 6, false);
-
-	oPresent = *(_Present*)(present);
-	*(_Present**)(present) = (_Present*)hkPresent;
-
-	std::this_thread::sleep_for(std::chrono::milliseconds(500));
-
-	MatSystemSurface->PlaySound("HL1/fvox/activated.wav");
+	printf("[+] 'kiero' initializing... (%d)\n", (int)kiero::init(kiero::RenderType::D3D9));
+	printf("[+] 'kiero' binding to Present... (%d)\n", (int)kiero::bind(17, (void**)&oPresent, hkPresent));
 
 	Events = new IEvents();
-
 	config::init();
 }
 
-BOOL APIENTRY DllMain(HMODULE hModule, uintptr_t uReason, LPVOID lpReserved)
+BOOL WINAPI DllMain(HMODULE module, uintptr_t reason, LPVOID reserved)
 {
-	if (uReason == DLL_PROCESS_ATTACH)
-	{
+	if (reason == DLL_PROCESS_ATTACH)
 		std::thread(main).detach();
-	}
 
 	return true;
 }

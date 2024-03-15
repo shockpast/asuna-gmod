@@ -1,6 +1,8 @@
 # Something?
 .vs
+.vscode
 build
+*.log
 
 # Prerequisites
 *.d

@@ -6,7 +6,7 @@
 
 #include "../globals.h"
 
-#include "../features/gui/gui.h"
+#include "../features/gui.h"
 
 #ifndef GWL_WNDPROC
 #define GWL_WNDPROC GWLP_WNDPROC
@@ -20,7 +20,7 @@ LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 
 	if (wParam == InputSystem->ButtonCodeToVirtualKey(settings::menu::key))
 	{
-		if (uMsg == WM_KEYDOWN && lastState == false) 
+		if (uMsg == WM_KEYDOWN && lastState == false)
 		{
 			lastState = true;
 			globals::menu::visible = !globals::menu::visible;
@@ -31,7 +31,7 @@ LRESULT __stdcall WndProc(const HWND hWnd, UINT uMsg, WPARAM wParam, LPARAM lPar
 		}
 	}
 
-	if (globals::menu::visible) 
+	if (globals::menu::visible)
 	{
 		ImGui_ImplWin32_WndProcHandler(hWnd, uMsg, wParam, lParam);
 		return true;
@@ -55,7 +55,7 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 		globals::oWndProc = (WNDPROC)SetWindowLongPtrA(globals::window, GWL_WNDPROC, (LONG_PTR)WndProc);
 
 		IDirect3DSwapChain9* pChain = nullptr;
-		
+
 		D3DPRESENT_PARAMETERS pp = {};
 		D3DDEVICE_CREATION_PARAMETERS param = {};
 
@@ -150,7 +150,7 @@ HRESULT __stdcall hkPresent(IDirect3DDevice9* pDevice, CONST RECT* pSourceRect, 
 			context->SetRenderTarget(rt);
 			context->EndRender();
 
-			logger::AddLog("[warning] screengrab -> [render] @ %s", GetTime());
+			logger::AddLog("[warning] screengrab -> [render] @ %s", GetTime().c_str());
 		}
 	}
 

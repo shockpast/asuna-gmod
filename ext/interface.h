@@ -2,9 +2,15 @@
 
 #include <Windows.h>
 
-typedef PVOID(*CreateInterfaceFn)(const char* name, int* returnCode);
-PVOID GetInterface(const char* moduleName, const char* interfaceName)
+template<typename T>
+static T* GetInterface(const char* libraryName, const char* interfaceName)
 {
-    CreateInterfaceFn createInterface = (CreateInterfaceFn)GetProcAddress(GetModuleHandleA(moduleName), "CreateInterface");
-    return createInterface(interfaceName, NULL);
+    const HINSTANCE handle = GetModuleHandleA(libraryName);
+
+    using Fn = T*(*)(const char*, int*);
+    const Fn CreateInterface = reinterpret_cast<Fn>(GetProcAddress(handle, "CreateInterface"));
+
+    printf("[?] GetInterface '%s' in '%s'\n", interfaceName, libraryName);
+
+    return CreateInterface(interfaceName, nullptr);
 }

@@ -2,8 +2,6 @@
 
 #include "../globals.h"
 
-#include "../features/gui/gui.h"
-
 typedef void(__thiscall* _FireEvent)(IGameEventManager2*, IGameEvent*, bool);
 _FireEvent oFireEvent;
 
