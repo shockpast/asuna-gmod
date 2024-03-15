@@ -3,6 +3,8 @@
 typedef void* (*CreateClientClassFn)(int entnum, int serialNum);
 typedef void* (*CreateEventFn)();
 
+class RecvTable;
+
 class RecvProp
 {
 	// This info comes from the receive data table.
