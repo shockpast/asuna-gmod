@@ -2,19 +2,18 @@
 
 #include "../globals.h"
 
-#include "../features/gui/gui.h"
+#include "gui.h"
 
-#include <functional>
-
-const char* events[4] = {
-	"player_hurt", "player_death", "player_spawn", "player_team"
+const char* events[5] = {
+	"player_hurt", "player_death", "player_spawn", "player_team",
+	"entity_killed"
 };
 
 class IEvents : public IGameEventListener2
 {
 public:
 	static inline IGameEvent* cEvent;
-	IEvents(void) { 
+	IEvents(void) {
 		for (const char* event : events)
 		{
 			EventManager->AddListener(this, event, false);
