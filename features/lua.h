@@ -47,7 +47,7 @@ fs::path RemoveReservedWords(const fs::path& path)
 {
 	auto newpath = std::filesystem::path();
 
-	for (const auto& e : path) 
+	for (const auto& e : path)
 	{
 		const auto& stem = e.stem();
 
@@ -56,11 +56,11 @@ fs::path RemoveReservedWords(const fs::path& path)
 			continue;
 		}
 
-		if (IsReserved((fs::path&)stem)) 
+		if (IsReserved((fs::path&)stem))
 		{
 			newpath /= ("_" + stem.string());
 		}
-		else 
+		else
 		{
 			newpath /= stem.string();
 		}
@@ -82,12 +82,12 @@ fs::path SanitizePath(std::string pathstr)
 	auto path = std::filesystem::path(pathstr);
 	path = RemoveReservedWords(path);
 
-	if (path.string().length() >= 200) 
+	if (path.string().length() >= 200)
 	{
 		return std::filesystem::path(path.string().substr(0, 196) + ".lua");
 	}
 
-	if (!path.has_filename() || path.filename().string().front() == '.') 
+	if (!path.has_filename() || path.filename().string().front() == '.')
 	{
 		path.replace_filename("noname");
 	}
@@ -100,15 +100,15 @@ fs::path SanitizePath(std::string pathstr)
 void RunScript(std::string input)
 {
 	Lua = LuaShared->GetLuaInterface((unsigned char)LuaInterfaceType::LUA_MENU);
-	
+
 	if (EngineClient->IsInGame())
 	{
 		Lua = LuaShared->GetLuaInterface((unsigned char)LuaInterfaceType::LUA_CLIENT);
 	}
 
-	globals::lua::mutex.lock();
+	runnerMutex.lock();
 	globals::lua::queue.push(input);
-	globals::lua::mutex.unlock();
+	runnerMutex.unlock();
 }
 
 void SaveScript(std::string fileName, std::string fileContent)
@@ -137,13 +137,7 @@ void SaveScript(std::string fileName, std::string fileContent)
 		path /= serverName;
 		path /= sanitizedFileName;
 
-		try
-		{
-			fs::create_directories(path.parent_path());
-		}
-		catch (...)
-		{
-		}
+		fs::create_directories(path.parent_path());
 
 		auto of = std::ofstream(path, settings::lua::scripthook::dumpMode);
 		of << fileContent;
