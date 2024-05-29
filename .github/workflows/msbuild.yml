@@ -24,7 +24,7 @@ jobs:
           boost_version: 1.84.0
           boost_install_dir: C:\libs\boost
           platform_version: 2022
-          arch: x64
+          arch: x86
           toolset: msvc
           link: static
 
