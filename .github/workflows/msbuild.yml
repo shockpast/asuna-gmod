@@ -22,7 +22,7 @@ jobs:
         uses: MarkusJx/install-boost@v2.4.5
         with:
           boost_version: 1.84.0
-          boost_install_dir: C:\libs\boost
+          boost_install_dir: C:\libs\
           platform_version: 2022
           arch: x86
           toolset: msvc
