@@ -2,8 +2,6 @@ name: Build
 
 on:
   push:
-    branches-ignore:
-      - 'dev/**'
     tags-ignore:
       - '**'
   pull_request:
