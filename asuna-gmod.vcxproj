@@ -1,14 +1,6 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup Label="ProjectConfigurations">
-    <ProjectConfiguration Include="Debug|Win32">
-      <Configuration>Debug</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
-    <ProjectConfiguration Include="Release|Win32">
-      <Configuration>Release</Configuration>
-      <Platform>Win32</Platform>
-    </ProjectConfiguration>
     <ProjectConfiguration Include="Debug|x64">
       <Configuration>Debug</Configuration>
       <Platform>x64</Platform>
@@ -26,19 +18,6 @@
     <WindowsTargetPlatformVersion>10.0</WindowsTargetPlatformVersion>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>true</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
-    <CharacterSet>Unicode</CharacterSet>
-  </PropertyGroup>
-  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
-    <ConfigurationType>Application</ConfigurationType>
-    <UseDebugLibraries>false</UseDebugLibraries>
-    <PlatformToolset>v143</PlatformToolset>
-    <WholeProgramOptimization>true</WholeProgramOptimization>
-    <CharacterSet>Unicode</CharacterSet>
-  </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'" Label="Configuration">
     <ConfigurationType>DynamicLibrary</ConfigurationType>
     <UseDebugLibraries>true</UseDebugLibraries>
@@ -61,12 +40,6 @@
   </ImportGroup>
   <ImportGroup Label="Shared">
   </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
-  <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
-  </ImportGroup>
   <ImportGroup Label="PropertySheets" Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
   </ImportGroup>
@@ -79,7 +52,7 @@
     <IntDir>$(SolutionDir)\build\intermediates\</IntDir>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
     <GenerateManifest>false</GenerateManifest>
-    <IncludePath>$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
+    <IncludePath>D:\Temp\boost_1_85_0;$(DXSDK_DIR)Include;$(IncludePath)</IncludePath>
     <LibraryPath>$(DXSDK_DIR)Lib\x64;$(LibraryPath)</LibraryPath>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
@@ -87,34 +60,9 @@
     <IntDir>$(SolutionDir)\build\debug\intermediates\</IntDir>
     <AllProjectIncludesArePublic>true</AllProjectIncludesArePublic>
   </PropertyGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;_DEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
-    </ClCompile>
-    <Link>
-      <SubSystem>Console</SubSystem>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-    </Link>
-  </ItemDefinitionGroup>
-  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
-    <ClCompile>
-      <WarningLevel>Level3</WarningLevel>
-      <FunctionLevelLinking>true</FunctionLevelLinking>
-      <IntrinsicFunctions>true</IntrinsicFunctions>
-      <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>WIN32;NDEBUG;_CONSOLE;%(PreprocessorDefinitions)</PreprocessorDefinitions>
-      <ConformanceMode>true</ConformanceMode>
-    </ClCompile>
-    <Link>
-      <SubSystem>Console</SubSystem>
-      <EnableCOMDATFolding>true</EnableCOMDATFolding>
-      <OptimizeReferences>true</OptimizeReferences>
-      <GenerateDebugInformation>true</GenerateDebugInformation>
-    </Link>
-  </ItemDefinitionGroup>
+  <PropertyGroup Label="Vcpkg">
+    <VcpkgEnabled>false</VcpkgEnabled>
+  </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
@@ -153,6 +101,7 @@
       <MinimalRebuild>false</MinimalRebuild>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <StringPooling>true</StringPooling>
+      <AdditionalOptions>/source-charset:utf-8 /execution-charset:utf-8 %(AdditionalOptions)</AdditionalOptions>
     </ClCompile>
     <Link>
       <SubSystem>Windows</SubSystem>
@@ -165,74 +114,74 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="ext\kiero\kiero.cpp" />
-    <ClCompile Include="ext\kiero\minhook\src\buffer.c" />
-    <ClCompile Include="ext\kiero\minhook\src\hde\hde32.c" />
-    <ClCompile Include="ext\kiero\minhook\src\hde\hde64.c" />
-    <ClCompile Include="ext\kiero\minhook\src\hook.c" />
-    <ClCompile Include="ext\kiero\minhook\src\trampoline.c" />
+    <ClCompile Include="deps\imgui\imgui.cpp" />
+    <ClCompile Include="deps\imgui\imgui_demo.cpp" />
+    <ClCompile Include="deps\imgui\imgui_draw.cpp" />
+    <ClCompile Include="deps\imgui\imgui_impl_dx9.cpp" />
+    <ClCompile Include="deps\imgui\imgui_impl_win32.cpp" />
+    <ClCompile Include="deps\imgui\imgui_tables.cpp" />
+    <ClCompile Include="deps\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="deps\kiero\kiero.cpp" />
+    <ClCompile Include="deps\kiero\minhook\src\buffer.c" />
+    <ClCompile Include="deps\kiero\minhook\src\hde\hde32.c" />
+    <ClCompile Include="deps\kiero\minhook\src\hde\hde64.c" />
+    <ClCompile Include="deps\kiero\minhook\src\hook.c" />
+    <ClCompile Include="deps\kiero\minhook\src\trampoline.c" />
+    <ClCompile Include="deps\memory.cpp" />
+    <ClCompile Include="deps\texteditor\text_editor.cpp" />
     <ClCompile Include="helpers\common.cpp" />
     <ClCompile Include="dllmain.cpp" />
-    <ClCompile Include="ext\imgui\imgui.cpp" />
-    <ClCompile Include="ext\imgui\imgui_demo.cpp" />
-    <ClCompile Include="ext\imgui\imgui_draw.cpp" />
-    <ClCompile Include="ext\imgui\imgui_impl_dx9.cpp" />
-    <ClCompile Include="ext\imgui\imgui_impl_win32.cpp" />
-    <ClCompile Include="ext\imgui\imgui_tables.cpp" />
-    <ClCompile Include="ext\imgui\imgui_widgets.cpp" />
-    <ClCompile Include="ext\imgui_ext\texteditor.cpp" />
-    <ClCompile Include="ext\memory.cpp" />
     <ClCompile Include="headers\tier1\KeyValues.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="ext\imgui\imconfig.h" />
-    <ClInclude Include="ext\imgui\imgui.h" />
-    <ClInclude Include="ext\imgui\imgui_impl_dx9.h" />
-    <ClInclude Include="ext\imgui\imgui_impl_win32.h" />
-    <ClInclude Include="ext\imgui\imgui_internal.h" />
-    <ClInclude Include="ext\imgui\imstb_rectpack.h" />
-    <ClInclude Include="ext\imgui\imstb_textedit.h" />
-    <ClInclude Include="ext\imgui\imstb_truetype.h" />
-    <ClInclude Include="ext\imgui_ext\texteditor.h" />
-    <ClInclude Include="ext\interface.h" />
-    <ClInclude Include="ext\kiero\kiero.h" />
-    <ClInclude Include="ext\kiero\minhook\include\MinHook.h" />
-    <ClInclude Include="ext\kiero\minhook\src\buffer.h" />
-    <ClInclude Include="ext\kiero\minhook\src\hde\hde32.h" />
-    <ClInclude Include="ext\kiero\minhook\src\hde\hde64.h" />
-    <ClInclude Include="ext\kiero\minhook\src\hde\pstdint.h" />
-    <ClInclude Include="ext\kiero\minhook\src\hde\table32.h" />
-    <ClInclude Include="ext\kiero\minhook\src\hde\table64.h" />
-    <ClInclude Include="ext\kiero\minhook\src\trampoline.h" />
-    <ClInclude Include="ext\memory.h" />
-    <ClInclude Include="ext\toml\color.hpp" />
-    <ClInclude Include="ext\toml\combinator.hpp" />
-    <ClInclude Include="ext\toml\comments.hpp" />
-    <ClInclude Include="ext\toml\datetime.hpp" />
-    <ClInclude Include="ext\toml\exception.hpp" />
-    <ClInclude Include="ext\toml\from.hpp" />
-    <ClInclude Include="ext\toml\get.hpp" />
-    <ClInclude Include="ext\toml\into.hpp" />
-    <ClInclude Include="ext\toml\lexer.hpp" />
-    <ClInclude Include="ext\toml\literal.hpp" />
-    <ClInclude Include="ext\toml\macros.hpp" />
-    <ClInclude Include="ext\toml\parser.hpp" />
-    <ClInclude Include="ext\toml\region.hpp" />
-    <ClInclude Include="ext\toml\result.hpp" />
-    <ClInclude Include="ext\toml\serializer.hpp" />
-    <ClInclude Include="ext\toml\source_location.hpp" />
-    <ClInclude Include="ext\toml\storage.hpp" />
-    <ClInclude Include="ext\toml\string.hpp" />
-    <ClInclude Include="ext\toml\toml.hpp" />
-    <ClInclude Include="ext\toml\traits.hpp" />
-    <ClInclude Include="ext\toml\types.hpp" />
-    <ClInclude Include="ext\toml\utility.hpp" />
-    <ClInclude Include="ext\toml\value.hpp" />
-    <ClInclude Include="ext\toml\version.hpp" />
+    <ClInclude Include="deps\imgui\imconfig.h" />
+    <ClInclude Include="deps\imgui\imgui.h" />
+    <ClInclude Include="deps\imgui\imgui_impl_dx9.h" />
+    <ClInclude Include="deps\imgui\imgui_impl_win32.h" />
+    <ClInclude Include="deps\imgui\imgui_internal.h" />
+    <ClInclude Include="deps\imgui\imstb_rectpack.h" />
+    <ClInclude Include="deps\imgui\imstb_textedit.h" />
+    <ClInclude Include="deps\imgui\imstb_truetype.h" />
+    <ClInclude Include="deps\imgui_ext\texteditor.h" />
+    <ClInclude Include="deps\interface.h" />
+    <ClInclude Include="deps\kiero\kiero.h" />
+    <ClInclude Include="deps\kiero\minhook\include\MinHook.h" />
+    <ClInclude Include="deps\kiero\minhook\src\buffer.h" />
+    <ClInclude Include="deps\kiero\minhook\src\hde\hde32.h" />
+    <ClInclude Include="deps\kiero\minhook\src\hde\hde64.h" />
+    <ClInclude Include="deps\kiero\minhook\src\hde\pstdint.h" />
+    <ClInclude Include="deps\kiero\minhook\src\hde\table32.h" />
+    <ClInclude Include="deps\kiero\minhook\src\hde\table64.h" />
+    <ClInclude Include="deps\kiero\minhook\src\trampoline.h" />
+    <ClInclude Include="deps\memory.h" />
+    <ClInclude Include="deps\texteditor\text_editor.h" />
+    <ClInclude Include="deps\toml\color.hpp" />
+    <ClInclude Include="deps\toml\combinator.hpp" />
+    <ClInclude Include="deps\toml\comments.hpp" />
+    <ClInclude Include="deps\toml\datetime.hpp" />
+    <ClInclude Include="deps\toml\exception.hpp" />
+    <ClInclude Include="deps\toml\from.hpp" />
+    <ClInclude Include="deps\toml\get.hpp" />
+    <ClInclude Include="deps\toml\into.hpp" />
+    <ClInclude Include="deps\toml\lexer.hpp" />
+    <ClInclude Include="deps\toml\literal.hpp" />
+    <ClInclude Include="deps\toml\macros.hpp" />
+    <ClInclude Include="deps\toml\parser.hpp" />
+    <ClInclude Include="deps\toml\region.hpp" />
+    <ClInclude Include="deps\toml\result.hpp" />
+    <ClInclude Include="deps\toml\serializer.hpp" />
+    <ClInclude Include="deps\toml\source_location.hpp" />
+    <ClInclude Include="deps\toml\storage.hpp" />
+    <ClInclude Include="deps\toml\string.hpp" />
+    <ClInclude Include="deps\toml\toml.hpp" />
+    <ClInclude Include="deps\toml\traits.hpp" />
+    <ClInclude Include="deps\toml\types.hpp" />
+    <ClInclude Include="deps\toml\utility.hpp" />
+    <ClInclude Include="deps\toml\value.hpp" />
+    <ClInclude Include="deps\toml\version.hpp" />
     <ClInclude Include="features\config.h" />
     <ClInclude Include="features\events.h" />
     <ClInclude Include="features\gui.h" />
-    <ClInclude Include="features\gui\gui.h" />
     <ClInclude Include="features\lua.h" />
     <ClInclude Include="features\lua_api.h" />
     <ClInclude Include="globals.h" />
@@ -296,6 +245,7 @@
     <ClInclude Include="headers\vphysics\CPhysicsSurfaceProps.h" />
     <ClInclude Include="helpers\common.h" />
     <ClInclude Include="hooks\CreateMove.h" />
+    <ClInclude Include="hooks\EndScene.h" />
     <ClInclude Include="hooks\FireEvent.h" />
     <ClInclude Include="hooks\Paint.h" />
     <ClInclude Include="hooks\PaintTraverse.h" />
@@ -303,15 +253,7 @@
     <ClInclude Include="hooks\RenderView.h" />
     <ClInclude Include="hooks\RunStringEx.h" />
     <ClInclude Include="hooks\SendNetMsg.h" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include=".gitattributes" />
-    <None Include=".gitignore" />
-    <None Include="API.md" />
-    <None Include="README.md" />
-  </ItemGroup>
-  <ItemGroup>
-    <Text Include="LICENSE.txt" />
+    <ClInclude Include="hooks\WriteUsercmdDeltaToBuffer.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

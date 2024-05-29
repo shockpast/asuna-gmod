@@ -1,6 +1,8 @@
+#include <Windows.h>
+
+#include <filesystem>
 #include <string>
 #include <ctime>
-#include <filesystem>
 
 std::string GetTime()
 {
@@ -24,4 +26,16 @@ std::string RandomString(int length)
 		output += alphabet[rand() % (alphabet.length() - 1)];
 
 	return output;
+}
+
+std::string ToUTF8(std::string message)
+{
+	std::string ret;
+	int len = WideCharToMultiByte(CP_UTF8, 0, (LPCWCH)message.c_str(), message.length(), NULL, 0, NULL, NULL);
+	if (len > 0)
+	{
+		ret.resize(len);
+		WideCharToMultiByte(CP_UTF8, 0, (LPCWCH)message.c_str(), message.length(), &ret[0], len, NULL, NULL);
+	}
+	return ret;
 }

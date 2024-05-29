@@ -7,8 +7,8 @@
 
 #include "../headers/sdk/luajit.h"
 
-#include <fstream>
 #include <filesystem>
+#include <fstream>
 #include <random>
 
 namespace fs = std::filesystem;
@@ -17,8 +17,6 @@ namespace lua_api
 {
 	LUA_FUNCTION(log)
 	{
-		LUA->CheckString(1);
-
 		logger::AddLog(LUA->GetString(-1));
 
 		return 0;
@@ -26,8 +24,6 @@ namespace lua_api
 
 	LUA_FUNCTION(clientcmd)
 	{
-		LUA->CheckString(1);
-
 		EngineClient->ClientCmd_Unrestricted(LUA->GetString(1));
 
 		return 0;
@@ -35,8 +31,6 @@ namespace lua_api
 
 	LUA_FUNCTION(change_name)
 	{
-		LUA->CheckString(1);
-
 		const char* name = LUA->GetString(1);
 		static uint8_t packet[256 + sizeof(name)];
 
@@ -55,8 +49,6 @@ namespace lua_api
 
 	LUA_FUNCTION(custom_disconnect)
 	{
-		LUA->CheckString(1);
-
 		const char* reason = LUA->GetString(1);
 		static uint8_t packet[256 + sizeof(reason)];
 
@@ -74,15 +66,13 @@ namespace lua_api
 
 	LUA_FUNCTION(include)
 	{
-		LUA->CheckString(1);
-
 		std::string pathName("C:\\asuna\\lua\\");
 		std::string fileName(LUA->GetString(1));
 		std::string rootPath = pathName + fileName;
 
 		if (!fs::exists(rootPath.c_str()))
 		{
-			logger::AddLog("[warning] %s doesn't exist!", fileName);
+			logger::AddLog("[warning] %s doesn't exist!", fileName.c_str());
 			return 0;
 		}
 
@@ -91,7 +81,7 @@ namespace lua_api
 			(std::istreambuf_iterator<char>()));
 		if (content.length() <= 0)
 		{
-			logger::AddLog("[warning] %s is empty!", fileName);
+			logger::AddLog("[warning] %s is empty!", fileName.c_str());
 			return 0;
 		}
 
@@ -109,8 +99,6 @@ namespace lua_api
 
 	LUA_FUNCTION(common_random_string)
 	{
-		LUA->CheckNumber(1);
-
 		int length = LUA->GetNumber(1);
 		const std::string set = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789";
 

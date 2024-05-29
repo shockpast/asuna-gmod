@@ -33,6 +33,8 @@ void __fastcall hkPaintTraverse(VPanelWrapper* _this, VPanel* panel, bool force_
 				logger::AddLog("[error] syntax error: %s\n", error.c_str());
 			}
 
+			globals::lua::queue.pop();
+
 			if (Lua->IsType(-1, LuaObjectType::FUNCTION))
 			{
 				lua_api::init();
@@ -45,8 +47,6 @@ void __fastcall hkPaintTraverse(VPanelWrapper* _this, VPanel* panel, bool force_
 					logger::AddLog("[error] execution error: %s\n", error.c_str());
 				}
 			}
-
-			globals::lua::queue.pop();
 		}
 
 		globals::lua::mutex.unlock();

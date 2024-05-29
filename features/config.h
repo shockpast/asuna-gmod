@@ -1,11 +1,12 @@
 #pragma once
 
-#include "../ext/toml/toml.hpp"
+#include "../deps/toml/toml.hpp"
 
 #include "../globals.h"
 
 #include <fstream>
 #include <filesystem>
+#include <map>
 
 namespace config {
 	void init()

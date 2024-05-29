@@ -12,6 +12,7 @@
 
 #include <psapi.h>
 #include <signal.h>
+#include <string_view>
 
 void BytePatch(PVOID source, BYTE newValue);
 
@@ -55,7 +56,13 @@ static T* GetVMT(uintptr_t address, int index, uintptr_t offset)
 
     uintptr_t relativeAddress = *(DWORD*)(instruction + step);
     uintptr_t realAddress = instruction + instructionSize + relativeAddress;
-    return *(T**)(realAddress);
+
+    T* vmt = *(T**)(realAddress);
+
+    if (vmt == nullptr)
+        printf("[!] %s failed to retrieve\n", std::string(typeid(T).name()).substr(6).c_str());
+
+    return vmt;
 }
 
 template<typename T>

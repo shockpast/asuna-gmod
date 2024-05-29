@@ -4,12 +4,10 @@
 
 #include "../headers/sdk/luajit.h"
 
-#include <iostream>
 #include <fstream>
 #include <string>
-#include <optional>
-#include <filesystem>
 #include <mutex>
+#include <filesystem>
 
 std::mutex runnerMutex;
 

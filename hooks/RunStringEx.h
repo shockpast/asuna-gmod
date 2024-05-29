@@ -7,7 +7,7 @@
 #include "../features/lua.h"
 #include "../features/gui.h"
 
-#include "../ext/memory.h"
+#include "../deps/memory.h"
 
 #include <string>
 
@@ -37,15 +37,15 @@ int __fastcall hkCloseInterfaceLuaFn(CLuaShared* _this, CLuaInterface* luaInterf
 CLuaInterface* __fastcall hkCreateLuaInterfaceFn(CLuaShared* _this, LuaInterfaceType luaState, bool renew)
 {
     auto luaInterface = oCreateLuaInterfaceFn(_this, luaState, renew);
-    
-    if (luaState != LuaInterfaceType::LUA_CLIENT) 
+
+    if (luaState != LuaInterfaceType::LUA_CLIENT)
         return luaInterface;
 
     Lua = luaInterface;
 
-    if (!oRunStringEx) 
+    if (!oRunStringEx)
         oRunStringEx = VMTHook<_RunStringEx>((PVOID**)Lua, (PVOID)hkRunStringEx, 111, true);
-    if (!oSendNetMsg) 
+    if (!oSendNetMsg)
         oSendNetMsg = VMTHook<_SendNetMsg>((PVOID**)EngineClient->GetNetChannelInfo(), (PVOID)hkSendNetMsg, 40, true);
 
     return Lua;

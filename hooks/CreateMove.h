@@ -3,26 +3,25 @@
 #include "../globals.h"
 
 #include "../features/gui.h"
+#include "../helpers/common.h"
 
-typedef void(__thiscall* _CreateMove)(ClientModeShared*, float, CUserCmd*);
+typedef bool(__thiscall* _CreateMove)(ClientModeShared*, float, CUserCmd*);
 _CreateMove oCreateMove;
 
-void __fastcall hkCreateMove(ClientModeShared* _this, float flInputSampleTime, CUserCmd* cmd)
+bool __fastcall hkCreateMove(ClientModeShared* _this, float flInputSampleTime, CUserCmd* cmd)
 {
-	// simple bunnyhop
 	if (settings::misc::bunnyhop)
 	{
-		// getting local player every fucking tick is good good!
 		C_BasePlayer* player = (C_BasePlayer*)ClientEntityList->GetClientEntity(EngineClient->GetLocalPlayer());
 
 		if (!player)
-			return;
+			return false;
 		if (!player->IsAlive())
-			return;
+			return false;
 		if (player->GetMoveType() == MOVETYPE_LADDER || player->GetMoveType() == MOVETYPE_NOCLIP)
-			return;
+			return false;
 		if (player->GetFlags() & FL_INWATER)
-			return;
+			return false;
 
 		if (cmd->buttons & IN_JUMP && !(player->GetFlags() & FL_ONGROUND))
 			cmd->buttons &= ~IN_JUMP;

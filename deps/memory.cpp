@@ -65,7 +65,7 @@ const char* FindPattern(const char* moduleName, std::string_view pattern, std::s
         }
     }
 
-    if (moduleBase && moduleSize) 
+    if (moduleBase && moduleSize)
     {
         int lastIdx = pattern.length() - 1;
         const auto badCharTable = GenerateBadCharTable(pattern);
@@ -91,7 +91,7 @@ const char* FindPattern(const char* moduleName, std::string_view pattern, std::s
     }
 
     MessageBoxA(NULL, std::format("Module: {}\nPattern: {}\nmiku. miku. miku. miku. miku. miku.", moduleName, pattern).c_str(), "ERROR", MB_OK | MB_ICONERROR);
- 
+
     return 0;
 }
 

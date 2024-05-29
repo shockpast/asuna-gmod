@@ -38,9 +38,11 @@ void IEvents::FireGameEvent(IGameEvent* pEvent)
 	if (!pEvent)
 		return;
 
-	Lua->PushSpecial(SPECIAL_GLOB);
 	// this shit is very dangerous, since servers can detour hook.Add
 	// shockpast: ^^ :thumbs_up:
+
+	/*
+	Lua->PushSpecial(SPECIAL_GLOB);
 	Lua->GetField(-1, "hook");
 	Lua->GetField(-1, "Run");
 	Lua->PushString("asuna.event");
@@ -72,4 +74,5 @@ void IEvents::FireGameEvent(IGameEvent* pEvent)
 	}
 	Lua->Call(2, 0);
 	Lua->Pop(2);
+	*/
 }

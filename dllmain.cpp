@@ -1,33 +1,34 @@
-#define VC_EXTRALEAN
 #define WIN32_LEAN_AND_MEAN
 #include "Windows.h"
 
-#include "ext/memory.h"
-#include "ext/interface.h"
-#include "ext/kiero/kiero.h"
+#include "deps/memory.h"
+#include "deps/interface.h"
+#include "deps/kiero/kiero.h"
 
+#include "hooks/WriteUsercmdDeltaToBuffer.h"
 #include "hooks/PaintTraverse.h"
 #include "hooks/RunStringEx.h"
-#include "hooks/SendNetMsg.h"
 #include "hooks/CreateMove.h"
 #include "hooks/RenderView.h"
 #include "hooks/FireEvent.h"
+#include "hooks/EndScene.h"
 #include "hooks/Present.h"
 #include "hooks/Paint.h"
 
-#include "features/lua_api.h"
 #include "features/config.h"
 #include "features/events.h"
 
 #include "globals.h"
 
-#include <fstream>
-#include <d3d9.h>
+#include <thread>
 
 int main()
 {
 #ifdef _DEBUG
+	FreeConsole();
 	AllocConsole();
+	AttachConsole(GetCurrentProcessId());
+
 	SetConsoleTitleA(std::format("[debug] t.me/neshockpast - {}", _VERSION).c_str());
 	freopen_s((FILE**)stdout, "CONOUT$", "w", stdout);
 #endif
@@ -59,18 +60,22 @@ int main()
 	oRenderView = VMTHook<_RenderView>((PVOID**)ViewRender, (PVOID)hkRenderView, 6);
 	oFireEvent = VMTHook<_FireEvent>((PVOID**)EventManager, (PVOID)hkFireEvent, 8);
 	oCreateMove = VMTHook<_CreateMove>((PVOID**)ClientMode, (PVOID)hkCreateMove, 21);
+	oWriteUserCMDDeltaToBuffer = VMTHook<_WriteUserCMDDeltaToBuffer>((PVOID**)CHLclient, (PVOID) hkWriteUserCMDDeltaToBuffer,  23);
 
-	printf("[+] 'kiero' initializing... (%d)\n", (int)kiero::init(kiero::RenderType::D3D9));
-	printf("[+] 'kiero' binding to Present... (%d)\n", (int)kiero::bind(17, (void**)&oPresent, hkPresent));
+	kiero::init(kiero::RenderType::D3D9);
+	kiero::bind(17, (void**)&oPresent, reinterpret_cast<void*>(hkPresent));
+	kiero::bind(42, (void**)&oEndScene, reinterpret_cast<void*>(hkEndScene));
 
 	Events = new IEvents();
 	config::init();
 }
 
-BOOL WINAPI DllMain(HMODULE module, uintptr_t reason, LPVOID reserved)
+BOOL WINAPI DllMain(HMODULE hModule, uintptr_t uReason, LPVOID lpReserved)
 {
-	if (reason == DLL_PROCESS_ATTACH)
+	if (uReason == DLL_PROCESS_ATTACH)
+	{
 		std::thread(main).detach();
+	}
 
 	return true;
 }

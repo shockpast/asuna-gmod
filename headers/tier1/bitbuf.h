@@ -1,6 +1,8 @@
 
 #pragma once
 
+#include "../tier0/platform.h"
+
 #include <cstdint>
 #include <assert.h>
 #include <string.h>
@@ -167,6 +169,11 @@ public:
 		}
 	}
 
+	void WriteFloat(float val) {
+		LittleFloat(&val, &val);
+		WriteBits(&val, sizeof(val) << 3);
+	}
+
 	void WriteBytes(void* pIn, uint32_t nBytes) {
 		WriteBits(pIn, nBytes * 8);
 	}
@@ -193,6 +200,10 @@ public:
 
 	void WriteUnsignedLong(uint32_t val) {
 		WriteUInt(val, 32);
+	}
+
+	void WriteWord(int val) {
+		WriteUInt(val, sizeof(unsigned short) << 3);
 	}
 
 	void WriteString(const char* pStr) {

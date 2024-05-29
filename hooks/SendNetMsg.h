@@ -1,5 +1,7 @@
 #pragma once
 
+#include "../headers/engine/CNetChan.h"
+
 #include "../globals.h"
 
 typedef void(__thiscall* _SendNetMsg)(CNetChan*, INetMessage&, bool, bool);

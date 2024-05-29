@@ -1,6 +1,6 @@
 #pragma once
 
-#include "../../ext/memory.h"
+#include "../../deps/memory.h"
 
 #include "../lua_shared/CLuaInterface.h"
 

@@ -7,7 +7,7 @@
 #include <unordered_set>
 #include <unordered_map>
 #include <map>
-#include <regex>
+#include <boost/regex.hpp>
 #include "../imgui/imgui.h"
 
 class TextEditor
@@ -152,7 +152,7 @@ public:
 	{
 		typedef std::pair<std::string, PaletteIndex> TokenRegexString;
 		typedef std::vector<TokenRegexString> TokenRegexStrings;
-		typedef bool(*TokenizeCallback)(const char * in_begin, const char * in_end, const char *& out_begin, const char *& out_end, PaletteIndex & paletteIndex);
+		typedef bool(*TokenizeCallback)(const char* in_begin, const char* in_end, const char*& out_begin, const char*& out_end, PaletteIndex& paletteIndex);
 
 		std::string mName;
 		Keywords mKeywords;
@@ -218,13 +218,13 @@ public:
 	Coordinates GetCursorPosition() const { return GetActualCursorCoordinates(); }
 	void SetCursorPosition(const Coordinates& aPosition);
 
-	inline void SetHandleMouseInputs    (bool aValue){ mHandleMouseInputs    = aValue;}
+	inline void SetHandleMouseInputs(bool aValue) { mHandleMouseInputs = aValue; }
 	inline bool IsHandleMouseInputsEnabled() const { return mHandleKeyboardInputs; }
 
-	inline void SetHandleKeyboardInputs (bool aValue){ mHandleKeyboardInputs = aValue;}
+	inline void SetHandleKeyboardInputs(bool aValue) { mHandleKeyboardInputs = aValue; }
 	inline bool IsHandleKeyboardInputsEnabled() const { return mHandleKeyboardInputs; }
 
-	inline void SetImGuiChildIgnored    (bool aValue){ mIgnoreImGuiChild     = aValue;}
+	inline void SetImGuiChildIgnored(bool aValue) { mIgnoreImGuiChild = aValue; }
 	inline bool IsImGuiChildIgnored() const { return mIgnoreImGuiChild; }
 
 	inline void SetShowWhitespaces(bool aValue) { mShowWhitespaces = aValue; }
@@ -267,7 +267,7 @@ public:
 	static const Palette& GetRetroBluePalette();
 
 private:
-	typedef std::vector<std::pair<std::regex, PaletteIndex>> RegexList;
+	typedef std::vector<std::pair<boost::regex, PaletteIndex>> RegexList;
 
 	struct EditorState
 	{

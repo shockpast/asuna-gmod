@@ -100,14 +100,14 @@ public:
 	/*38*/	virtual void* ProcessPlayback(void) = 0;
 	/*39*/	virtual void* ProcessStream(void) = 0;
 	/*40*/	virtual void* ProcessPacket(void*, bool) = 0;
-	/*41*/	virtual void* SendNetMsg(void*, bool, bool) = 0;
+	/*41*/	virtual void* SendNetMsg(void*, bool) = 0;
 	/*42*/	virtual void* SendData(void*, bool) = 0;
 	/*43*/	virtual void* SendFile(char const*, unsigned int) = 0;
 	/*44*/	virtual void* DenyFile(unsigned int) = 0;
 	/*45*/	virtual void* RequestFile_OLD(char const*, unsigned int) = 0;
 	/*46*/	virtual void SetChoked(void) = 0; // m_outSequenceNr++; m_nChokedPackets;
 	/*47*/	virtual void* SendDatagram(void*) = 0;
-	/*48*/	virtual void* Transmit(bool) = 0;
+	/*48*/	virtual void* Transmit(bool = false) = 0;
 	/*49*/	virtual void* GetRemoteAddress(void)const = 0;
 	/*50*/	virtual void* GetMsgHandler(void)const = 0;
 	/*51*/	virtual void* GetDropNumber(void)const = 0;

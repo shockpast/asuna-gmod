@@ -46,7 +46,7 @@ typedef float vec_t;
 #elif defined( GNUC )
 // gnuc has the align decoration at the end
 #define ALIGN4
-#define ALIGN8 
+#define ALIGN8
 #define ALIGN16
 #define ALIGN32
 #define ALIGN128
@@ -227,7 +227,7 @@ public:
 	FORCEINLINE Vector& operator/=(const Vector& v);
 	FORCEINLINE Vector& operator/=(float s);
 	FORCEINLINE Vector& operator+=(float fl); ///< broadcast add
-	FORCEINLINE Vector& operator-=(float fl); ///< broadcast sub			
+	FORCEINLINE Vector& operator-=(float fl); ///< broadcast sub
 
 	inline QAngle toAngle();
 
@@ -264,7 +264,7 @@ public:
 	vec_t	DistTo(const Vector& vOther) const;
 
 	// Get the distance from this vector to the other one squared.
-	// NJS: note, VC wasn't inlining it correctly in several deeply nested inlines due to being an 'out of line' inline.  
+	// NJS: note, VC wasn't inlining it correctly in several deeply nested inlines due to being an 'out of line' inline.
 	// may be able to tidy this up after switching to VC7
 	FORCEINLINE vec_t DistToSqr(const Vector& vOther) const
 	{
@@ -656,12 +656,12 @@ inline Vector::Vector(vec_t XYZ)
 	CHECK_VALID(*this);
 }
 
-//inline Vector::Vector(const float *pFloat)					
+//inline Vector::Vector(const float *pFloat)
 //{
 //	Assert( pFloat );
-//	x = pFloat[0]; y = pFloat[1]; z = pFloat[2];	
+//	x = pFloat[0]; y = pFloat[1]; z = pFloat[2];
 //	CHECK_VALID(*this);
-//} 
+//}
 
 #if 0
 //-----------------------------------------------------------------------------
@@ -1401,7 +1401,7 @@ bool Vector::WithinAABox(Vector const& boxmin, Vector const& boxmax)
 }
 
 //-----------------------------------------------------------------------------
-// Get the distance from this vector to the other one 
+// Get the distance from this vector to the other one
 //-----------------------------------------------------------------------------
 inline vec_t Vector::DistTo(const Vector& vOther) const
 {
@@ -1926,7 +1926,7 @@ public:
 	vec_t	LengthSqr() const;
 
 	// negate the QAngle components
-	//void	Negate(); 
+	//void	Negate();
 
 	// No assignment operators either...
 	QAngle& operator=(const QAngle& src);
@@ -1938,7 +1938,7 @@ public:
 
 		if (x > 89.f) x = 89.f;
 		if (x < -89.f) x = -89.f;
-		
+
 		z = 0;
 		return *this;
 	};
@@ -1954,7 +1954,7 @@ public:
 	{
 		return Vector(std::cos(degreesToRadians(x+90.f)) * std::cos(degreesToRadians(y)), std::cos(degreesToRadians(x-90.f)) * std::sin(degreesToRadians(y)), -std::sin(degreesToRadians(x-90.f)));
 	};
-	
+
 #ifndef VECTOR_NO_SLOW_OPERATIONS
 	// copy constructors
 
