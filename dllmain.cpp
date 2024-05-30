@@ -25,9 +25,7 @@
 int main()
 {
 #ifdef _DEBUG
-	FreeConsole();
 	AllocConsole();
-	AttachConsole(GetCurrentProcessId());
 
 	SetConsoleTitleA(std::format("[debug] t.me/neshockpast - {}", _VERSION).c_str());
 	freopen_s((FILE**)stdout, "CONOUT$", "w", stdout);

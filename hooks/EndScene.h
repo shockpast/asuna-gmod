@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../deps/imgui/imgui_impl_dx9.h"
+#include "../deps/fonts/cascadia_mono.h"
 
 #include <intrin.h>
 
@@ -88,7 +89,14 @@ int __fastcall hkEndScene(IDirect3DDevice9* device)
 		ImGuiIO& io = ImGui::GetIO();
 		io.LogFilename = NULL;
 		io.IniFilename = NULL;
-		io.FontDefault = io.Fonts->AddFontFromFileTTF("C:\\Windows\\Fonts\\CascadiaMono.ttf", 14.0f, nullptr, io.Fonts->GetGlyphRangesCyrillic());
+
+		io.FontDefault = io.Fonts->AddFontFromMemoryCompressedTTF(
+			CascadiaMono_compressed_data,
+			CascadiaMono_compressed_size,
+			14.0f,
+			nullptr,
+			io.Fonts->GetGlyphRangesCyrillic()
+		);
 
 		initialized = true;
 	}

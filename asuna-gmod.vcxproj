@@ -134,6 +134,7 @@
     <ClCompile Include="headers\tier1\KeyValues.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="deps\fonts\cascadia_mono.h" />
     <ClInclude Include="deps\imgui\imconfig.h" />
     <ClInclude Include="deps\imgui\imgui.h" />
     <ClInclude Include="deps\imgui\imgui_impl_dx9.h" />
