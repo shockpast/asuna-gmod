@@ -29,7 +29,7 @@
 #include <mutex>
 #include <stack>
 
-#define _VERSION "31.05.2024"
+#define _VERSION "01.06.2024"
 
 #define ViewRenderOffset 0xC4
 #define GlobalVarsOffset 0x94
