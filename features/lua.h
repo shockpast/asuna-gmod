@@ -100,9 +100,7 @@ void RunScript(std::string input)
 	Lua = LuaShared->GetLuaInterface((unsigned char)LuaInterfaceType::LUA_MENU);
 
 	if (EngineClient->IsInGame())
-	{
 		Lua = LuaShared->GetLuaInterface((unsigned char)LuaInterfaceType::LUA_CLIENT);
-	}
 
 	runnerMutex.lock();
 	globals::lua::queue.push(input);
