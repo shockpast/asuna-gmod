@@ -17,13 +17,15 @@ namespace lua_api
 {
 	LUA_FUNCTION(log)
 	{
-		logger::AddLog(LUA->GetString(-1));
+		LUA->CheckString(1);
+		logger::AddLog(LUA->GetString(1));
 
 		return 0;
 	}
 
 	LUA_FUNCTION(clientcmd)
 	{
+
 		EngineClient->ClientCmd_Unrestricted(LUA->GetString(1));
 
 		return 0;
@@ -31,6 +33,7 @@ namespace lua_api
 
 	LUA_FUNCTION(change_name)
 	{
+		LUA->CheckString(1);
 		const char* name = LUA->GetString(1);
 		static uint8_t packet[256 + sizeof(name)];
 
@@ -49,6 +52,7 @@ namespace lua_api
 
 	LUA_FUNCTION(custom_disconnect)
 	{
+		LUA->CheckString(1);
 		const char* reason = LUA->GetString(1);
 		static uint8_t packet[256 + sizeof(reason)];
 
@@ -66,6 +70,7 @@ namespace lua_api
 
 	LUA_FUNCTION(include)
 	{
+		LUA->CheckString(1);
 		std::string pathName("C:\\asuna\\lua\\");
 		std::string fileName(LUA->GetString(1));
 		std::string rootPath = pathName + fileName;
