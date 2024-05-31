@@ -4,4 +4,4 @@
 
 std::string GetTime();
 std::string RandomString(int length);
-std::string ToUTF8(std::string message);
+std::string GetFileContent(const char* path);

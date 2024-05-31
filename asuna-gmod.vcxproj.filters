@@ -45,9 +45,6 @@
     <ClCompile Include="deps\imgui\imgui_widgets.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="deps\imgui_ext\texteditor.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
     <ClCompile Include="deps\kiero\minhook\src\hde\hde32.c">
       <Filter>Source Files</Filter>
     </ClCompile>
@@ -69,10 +66,10 @@
     <ClCompile Include="deps\memory.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="deps\imgui_ext\language_definitions.cpp">
+    <ClCompile Include="deps\texteditor\text_editor.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="deps\imgui_ext\text_editor.cpp">
+    <ClCompile Include="deps\imfilebr\file_browser.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
@@ -243,9 +240,6 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="hooks\Present.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="features\gui\gui.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="features\lua.h">
@@ -479,7 +473,16 @@
     <ClInclude Include="deps\imgui_ext\texteditor.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="deps\imgui_ext\text_editor.h">
+    <ClInclude Include="deps\fonts\cascadia_mono.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="deps\texteditor\text_editor.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="deps\imfilebr\dirent\dirent.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="deps\imfilebr\file_browser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>

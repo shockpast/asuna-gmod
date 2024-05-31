@@ -1,6 +1,7 @@
 #include <Windows.h>
 
 #include <filesystem>
+#include <fstream>
 #include <string>
 #include <ctime>
 
@@ -28,14 +29,17 @@ std::string RandomString(int length)
 	return output;
 }
 
-std::string ToUTF8(std::string message)
+std::string GetFileContent(const char* path)
 {
-	std::string ret;
-	int len = WideCharToMultiByte(CP_UTF8, 0, (LPCWCH)message.c_str(), message.length(), NULL, 0, NULL, NULL);
-	if (len > 0)
-	{
-		ret.resize(len);
-		WideCharToMultiByte(CP_UTF8, 0, (LPCWCH)message.c_str(), message.length(), &ret[0], len, NULL, NULL);
-	}
-	return ret;
-}
+	std::ifstream file(path);
+	if (!file)
+		return "";
+
+	std::string content((std::istreambuf_iterator<char>(file)), (std::istreambuf_iterator<char>()));
+	if (content.empty())
+		return "";
+
+	file.close();
+
+	return content;
+};

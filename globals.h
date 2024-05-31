@@ -3,6 +3,7 @@
 #define WIN32_LEAN_AND_MEAN
 
 #include "deps/texteditor/text_editor.h"
+#include "deps/imfilebr/file_browser.h"
 
 #include "headers/tier0/shareddefs.h"
 #include "headers/client/ConVar.h"
@@ -84,6 +85,7 @@ namespace globals
 
 		bool visible = false;
 		TextEditor editor;
+		imgui_addons::ImGuiFileBrowser file_browser; // wtf is this naming bro
 	}
 
 	namespace lua
