@@ -71,28 +71,15 @@ namespace lua_api
 	LUA_FUNCTION(include)
 	{
 		LUA->CheckString(1);
-		std::string pathName("C:\\asuna\\lua\\");
-		std::string fileName(LUA->GetString(1));
-		std::string rootPath = pathName + fileName;
+
+		std::string rootPath = std::format("C:\\asuna\\lua\\%s", LUA->GetString(1));
 
 		if (!fs::exists(rootPath.c_str()))
-		{
-			logger::AddLog("[warning] %s doesn't exist!", fileName.c_str());
 			return 0;
-		}
-
-		std::ifstream file(rootPath.c_str());
-		std::string content((std::istreambuf_iterator<char>(file)),
-			(std::istreambuf_iterator<char>()));
-		if (content.length() <= 0)
-		{
-			logger::AddLog("[warning] %s is empty!", fileName.c_str());
-			return 0;
-		}
 
 		try
 		{
-			std::thread(RunScript, content).detach();
+			std::thread(RunScript, GetFileContent(rootPath.c_str())).detach();
 		}
 		catch (std::exception& e)
 		{
